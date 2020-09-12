@@ -24,8 +24,7 @@
 ## Требования
 
 Минимальная версия PHP: 7.4.7 \
-Минимальная версия Composer: 1.9.3 \
-Ссылка на пакет в packagist: <https://packagist.org/packages/raff/tic-tac-toe>
+Минимальная версия Composer: 1.9.3
 
 * * *
 
@@ -46,3 +45,9 @@
 3. Выполнить команду `composer require raff/tic-tac-toe`;
 4. Перейти в каталог vendor/bin;
 5. Запустить файл tic-tac-toe.bat.
+
+* * *
+
+## Ссылки
+
+Packagist: <https://packagist.org/packages/raff/tic-tac-toe>
