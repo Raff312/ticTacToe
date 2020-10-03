@@ -12,12 +12,13 @@
         "wp-cli/php-cli-tools": "^0.11.11"
     },
     "bin": [
-        "bin/tic-tac-toe"
+        "bin/tic-tac-toe.php"
     ],
     "autoload": {
         "files": [
             "src/Controller.php",
-            "src/View.php"
+            "src/View.php",
+            "src/Model.php"
         ]
     }
 }
