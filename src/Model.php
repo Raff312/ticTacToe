@@ -3,7 +3,6 @@
 namespace raff312\ticTacToe\Model;
 
 use Exception as Exception;
-use LogicException as LogicException;
 
 const DEFAULT_DIMENSION = 3;
 const DEFAULT_MARKUP = " ";
@@ -82,7 +81,7 @@ class Board
         ) {
             return PLAYER_O_MARKUP;
         }
-        
+
         if (
             $this->checkArr[2 * $this->dimension] == $this->dimension ||
             $this->checkArr[2 * $this->dimension + 1] == $this->dimension
@@ -133,10 +132,10 @@ class Board
         if ($markup == PLAYER_O_MARKUP) {
             $offset = -1;
         }
-    
+
         $this->checkArr[$i] += $offset;
         $this->checkArr[$this->dimension + $j] += $offset;
-    
+
         if (($i == $j) && ($i == ($this->dimension - 1 - $j))) {
             $this->checkArr[2 * $this->dimension] += $offset;
             $this->checkArr[2 * $this->dimension + 1] += $offset;

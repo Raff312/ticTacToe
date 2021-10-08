@@ -18,7 +18,8 @@
         "files": [
             "src/Controller.php",
             "src/View.php",
-            "src/Model.php"
+            "src/Model.php",
+            "src/Repositories.php"
         ]
     }
 }

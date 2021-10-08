@@ -1,7 +1,7 @@
 <?php
 
-    $autoloadPathForGithub = __DIR__ . '/../vendor/autoload.php';
-    $autoloadPathForPackagist = __DIR__ . '/../../../autoload.php';
+$autoloadPathForGithub = __DIR__ . '/../vendor/autoload.php';
+$autoloadPathForPackagist = __DIR__ . '/../../../autoload.php';
 
 if (file_exists($autoloadPathForGithub)) {
     require_once($autoloadPathForGithub);
@@ -9,6 +9,6 @@ if (file_exists($autoloadPathForGithub)) {
     require_once($autoloadPathForPackagist);
 }
 
-    use function raff312\ticTacToe\Controller\startGame;
+use function raff312\ticTacToe\Controller\startGame;
 
-    startGame();
+startGame($argv);
