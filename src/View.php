@@ -36,18 +36,9 @@ function showGamesInfoList($list)
     }
 }
 
-function showGameReplay($xCoords, $oCoords)
+function showGameReplayStep($stepNum, $xCoords, $oCoords)
 {
-    $xCoordsArr = explode(",", $xCoords);
-    $oCoordsArr = explode(",", $oCoords);
-
-    for ($i = 0; $i < max(count($xCoordsArr), count($oCoordsArr)); $i++) {
-        $xCoordVal = array_key_exists($i, $xCoordsArr) ? $xCoordsArr[$i] : "";
-        $oCoordVal = array_key_exists($i, $oCoordsArr) ? $oCoordsArr[$i] : "";
-
-        $step = $i + 1;
-        line("\nStep #: $step\n'X' coord: $xCoordVal\n'O' coord: $oCoordVal");
-    }
+    line("\nStep #: $stepNum\n'X' coord: $xCoords\n'O' coord: $oCoords");
 }
 
 function showMessage($msg)

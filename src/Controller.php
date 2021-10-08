@@ -8,11 +8,12 @@ use raff312\ticTacToe\Repositories\GamesRepository as GamesRepository;
 
 use function raff312\ticTacToe\View\showGameBoard;
 use function raff312\ticTacToe\View\showGamesInfoList;
-use function raff312\ticTacToe\View\showGameReplay;
+use function raff312\ticTacToe\View\showGameReplayStep;
 use function raff312\ticTacToe\View\showMessage;
 use function raff312\ticTacToe\View\getValue;
 
 use const raff312\ticTacToe\Model\PLAYER_X_MARKUP;
+use const raff312\ticTacToe\Model\PLAYER_O_MARKUP;
 
 function startGame($argv)
 {
@@ -114,8 +115,10 @@ function processUserTurn($board, $markup, &$stopGame)
     do {
         try {
             $coords = getCoords($board);
-            $board->setMarkupOnBoard($coords[0], $coords[1], $markup);
-            if ($board->determineWinner($coords[0], $coords[1]) !== "") {
+            $coord1 = $coords[0] - 1;
+            $coord2 = $coords[1] - 1;
+            $board->setMarkupOnBoard($coord1, $coord2, $markup);
+            if ($board->determineWinner($coord1, $coord2) !== "") {
                 $stopGame = true;
             }
 
@@ -125,7 +128,7 @@ function processUserTurn($board, $markup, &$stopGame)
         }
     } while (!$answerTaked);
 
-    return $coords;
+    return [$coord1, $coord2];
 }
 
 function getCoords($board)
@@ -180,7 +183,41 @@ function replayGame($id)
 {
     $gamesRepository = new GamesRepository();
     $info = $gamesRepository->getById($id);
-    showGameReplay($info->xCoords, $info->oCoords);
+    
+    $gameBoard = new Board();
+    $gameBoard->setDimension($info->size);
+    $gameBoard->initialize();
+
+    $xCoordsArr = explode(",", $info->xCoords);
+    $oCoordsArr = explode(",", $info->oCoords);
+
+    for ($i = 0; $i < max(count($xCoordsArr), count($oCoordsArr)); $i++) {
+        $xCoords = [];
+        $oCoords = [];
+
+        if (array_key_exists($i, $xCoordsArr)) {
+            preg_match_all("!\d+!", $xCoordsArr[$i], $xCoords);
+        }
+
+        if (array_key_exists($i, $oCoordsArr)) {
+            preg_match_all("!\d+!", $oCoordsArr[$i], $oCoords);
+        }
+
+        $xCoordsDisplay = array_key_exists(0, $xCoords) ? ($xCoords[0][0] + 1) . " " . ($xCoords[0][1] + 1) : "";
+        $oCoordsDisplay = array_key_exists(0, $oCoords) ? ($oCoords[0][0] + 1) . " " . ($oCoords[0][1] + 1) : "";
+        showGameReplayStep($i + 1, $xCoordsDisplay, $oCoordsDisplay);
+
+        if (array_key_exists(0, $xCoords) && array_key_exists(0, $xCoords[0]) && array_key_exists(1, $xCoords[0])) {
+            $gameBoard->setMarkupOnBoard($xCoords[0][0], $xCoords[0][1], PLAYER_X_MARKUP);
+        }
+        if (array_key_exists(0, $oCoords) && array_key_exists(0, $oCoords[0]) && array_key_exists(1, $oCoords[0])) {
+            $gameBoard->setMarkupOnBoard($oCoords[0][0], $oCoords[0][1], PLAYER_O_MARKUP);
+        }
+
+        showMessage("");
+        showGameBoard($gameBoard);
+    }
+
     showMessage("\nWinner: $info->winnerMarkup");
 }
 
