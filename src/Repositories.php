@@ -2,8 +2,8 @@
 
 namespace raff312\ticTacToe\Repositories;
 
+use RedBeanPHP\Facade as R;
 use Exception as Exception;
-use SQLite3;
 use raff312\ticTacToe\Model\Board as Board;
 use stdClass;
 
@@ -11,15 +11,13 @@ const DB_PATH = "../data/games.db";
 
 class GamesRepository
 {
-    private $db;
-
     public function __construct()
     {
         if (!is_dir("../data")) {
             mkdir("../data");
         }
 
-        $this->db = new SQLite3(DB_PATH);
+        R::setup("sqlite:" . DB_PATH);
         $this->createTable();
     }
 
@@ -35,12 +33,12 @@ class GamesRepository
             xCoords TEXT,
             oCoords TEXT
         )";
-        $this->db->exec($gamesInfoTable);
+        R::exec($gamesInfoTable);
     }
 
     public function __destruct()
     {
-        $this->db->close();
+        R::close();
     }
 
     public function add(Board $board, $winnerMarkup, $xCoords, $oCoords)
@@ -51,7 +49,7 @@ class GamesRepository
         $playerName = getenv("username");
         $playerMarkup = $board->getUserMarkup();
 
-        $this->db->exec("INSERT INTO gamesInfo (
+        R::exec("INSERT INTO gamesInfo (
             sizeBoard, 
             gameDate, 
             playerName, 
@@ -74,17 +72,17 @@ class GamesRepository
     {
         $result = [];
 
-        $query = $this->db->query("SELECT * FROM gamesInfo");
-        while ($row = $query->fetchArray()) {
+        $queryArr = R::getAll("SELECT * FROM gamesInfo");
+        for ($i = 0; $i < count($queryArr); $i++) {
             $info = new stdClass();
-            $info->id = $row[0];
-            $info->size = $row[1];
-            $info->date = $row[2];
-            $info->name = $row[3];
-            $info->playerMarkup = $row[4];
-            $info->winnerMarkup = $row[5];
-            $info->xCoords = $row[6];
-            $info->oCoords = $row[7];
+            $info->id = $queryArr[$i]["id"];
+            $info->size = $queryArr[$i]["sizeBoard"];
+            $info->date = $queryArr[$i]["gameDate"];
+            $info->name = $queryArr[$i]["playerName"];
+            $info->playerMarkup = $queryArr[$i]["playerMarkup"];
+            $info->winnerMarkup = $queryArr[$i]["winnerMarkup"];
+            $info->xCoords = $queryArr[$i]["xCoords"];
+            $info->oCoords = $queryArr[$i]["oCoords"];
             array_push($result, $info);
         }
 
@@ -100,16 +98,16 @@ class GamesRepository
         $result = new stdClass();
 
         $query = "SELECT * FROM gamesInfo WHERE id='$id'";
-        $query = $this->db->query($query);
-        while ($row = $query->fetchArray()) {
-            $result->id = $row[0];
-            $result->size = $row[1];
-            $result->date = $row[2];
-            $result->name = $row[3];
-            $result->playerMarkup = $row[4];
-            $result->winnerMarkup = $row[5];
-            $result->xCoords = $row[6];
-            $result->oCoords = $row[7];
+        $queryArr = R::getAll($query);
+        for ($i = 0; $i < count($queryArr); $i++) {
+            $result->id = $queryArr[$i]["id"];
+            $result->size = $queryArr[$i]["sizeBoard"];
+            $result->date = $queryArr[$i]["gameDate"];
+            $result->name = $queryArr[$i]["playerName"];
+            $result->playerMarkup = $queryArr[$i]["playerMarkup"];
+            $result->winnerMarkup = $queryArr[$i]["winnerMarkup"];
+            $result->xCoords = $queryArr[$i]["xCoords"];
+            $result->oCoords = $queryArr[$i]["oCoords"];
         }
 
         return $result;
@@ -118,6 +116,6 @@ class GamesRepository
     private function idExists($id)
     {
         $query = "SELECT EXISTS(SELECT 1 FROM gamesInfo WHERE id='$id')";
-        return $this->db->querySingle($query) == 1;
+        return count(R::getRow($query)) >= 1;
     }
 }
